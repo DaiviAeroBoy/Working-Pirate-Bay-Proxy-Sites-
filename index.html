@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy List</title>
+    <style>
+        :root {
+            /* Light Theme (Apple-inspired) */
+            --bg-color: #fbfbfd;
+            --text-color: #1d1d1f;
+            --text-muted: #86868b;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --accent-color: #0066cc;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --gradient-bg: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-color: #000000;
+            --text-color: #f5f5f7;
+            --text-muted: #a1a1a6;
+            --glass-bg: rgba(28, 28, 30, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --accent-color: #2997ff;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --gradient-bg: linear-gradient(135deg, #1f005c, #0b0033);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background blur elements to enhance glassmorphism */
+        .bg-shape {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .bg-shape-1 {
+            width: 400px;
+            height: 400px;
+            background: #8ec5fc;
+            top: -100px;
+            left: -100px;
+        }
+
+        .bg-shape-2 {
+            width: 500px;
+            height: 500px;
+            background: #e0c3fc;
+            bottom: -200px;
+            right: -100px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Glassmorphism Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 50px;
+            box-shadow: var(--card-shadow);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-muted);
+            letter-spacing: -0.3px;
+        }
+
+        /* Glassmorphism Grid */
+        .proxy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .proxy-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .proxy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .proxy-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .proxy-card p {
+            color: var(--accent-color);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .proxy-card .status {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: #34c759;
+            font-weight: 600;
+            background: rgba(52, 199, 89, 0.1);
+            padding: 4px 12px;
+            border-radius: 12px;
+            align-self: flex-start;
+        }
+
+        /* Links Section */
+        .links-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .link-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .link-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--glass-border);
+            transition: color 0.2s ease;
+        }
+
+        .link-list a:hover {
+            color: var(--accent-color);
+        }
+
+        .link-list a::after {
+            content: "→";
+            font-size: 1.2rem;
+            opacity: 0.5;
+            transition: transform 0.2s ease;
+        }
+
+        .link-list a:hover::after {
+            transform: translateX(4px);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+                border-radius: 20px;
+            }
+            .proxy-grid {
+                grid-template-columns: 1fr;
+            }
+            .links-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+
+    <div class="container">
+        <header>
+            <h1>Proxy Directory</h1>
+            <button class="theme-toggle" id="themeToggle">Toggle Light Mode</button>
+        </header>
+
+        <h2 class="section-title">Verified Connections</h2>
+        <div class="proxy-grid">
+            <a href="https://tpb.run/" class="proxy-card" target="_blank" rel="noopener">
+                <span class="status">● Online</span>
+                <h3>TPB.Run</h3>
+                <p>tpb.run</p>
+            </a>
+            
+            <a href="https://pbproxy.pages.dev/" class="proxy-card" target="_blank" rel="noopener">
+                <span class="status">● Online</span>
+                <h3>PBProxy Pages</h3>
+                <p>pbproxy.pages.dev</p>
+            </a>
+
+            <a href="https://piratebay-proxy.pages.dev/" class="proxy-card" target="_blank" rel="noopener">
+                <span class="status">● Online</span>
+                <h3>PirateBay Proxy</h3>
+                <p>piratebay-proxy.pages.dev</p>
+            </a>
+
+            <a href="https://tpb.bounc.me/" class="proxy-card" target="_blank" rel="noopener">
+                <span class="status">● Online</span>
+                <h3>TPB Bounc</h3>
+                <p>tpb.bounc.me</p>
+            </a>
+
+            <a href="https://proxy.pastr.link/" class="proxy-card" target="_blank" rel="noopener">
+                <span class="status">● Online</span>
+                <h3>Proxy Pastr</h3>
+                <p>proxy.pastr.link</p>
+            </a>
+
+            <a href="https://thepiratebay.gitly.pro/" class="proxy-card" target="_blank" rel="noopener">
+                <span class="status">● Online</span>
+                <h3>ThePirateBay Gitly</h3>
+                <p>thepiratebay.gitly.pro</p>
+            </a>
+
+            <a href="https://tpbparty.bounc.me/" class="proxy-card" target="_blank" rel="noopener">
+                <span class="status">● Online</span>
+                <h3>TPB Party</h3>
+                <p>tpbparty.bounc.me</p>
+            </a>
+
+            <a href="https://tpb.prxy.click/" class="proxy-card" target="_blank" rel="noopener">
+                <span class="status">● Online</span>
+                <h3>TPB Prxy Click</h3>
+                <p>tpb.prxy.click</p>
+            </a>
+        </div>
+
+        <h2 class="section-title">Alternative Resources & Scripts</h2>
+        <div class="links-container">
+            <ul class="link-list">
+                <li><a href="https://github.com/piratebayproxy/UnblockedPiratebayClean" target="_blank" rel="noopener">UnblockedPiratebayClean (GitHub)</a></li>
+                <li><a href="https://tpbproxies.com/" target="_blank" rel="noopener">TPBProxies.com</a></li>
+                <li><a href="https://tpbparty.com/" target="_blank" rel="noopener">TPBParty.com</a></li>
+                <li><a href="https://thepiratebayproxylist.com/" target="_blank" rel="noopener">ThePirateBayProxyList.com</a></li>
+                <li><a href="https://piratebayproxy.info/" target="_blank" rel="noopener">PirateBayProxy.info</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const toggleBtn = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                htmlElement.setAttribute('data-theme', 'light');
+                toggleBtn.textContent = 'Toggle Dark Mode';
+            } else {
+                htmlElement.setAttribute('data-theme', 'dark');
+                toggleBtn.textContent = 'Toggle Light Mode';
+            }
+        });
+    </script>
+</body>
+</html>
